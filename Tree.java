@@ -1,9 +1,11 @@
+package MiSS;
+
 /**
  * Struktura drzew Tree
  */
 public class Tree { // HWINDData
     protected int height;   // wysokosc drzewa
-    protected int dbh;  // srednica drzewa na wysokosci piersi cz³owieka (1.3 m) [m]
+    protected int dbh;  // srednica drzewa na wysokosci piersi czï¿½owieka (1.3 m) [m]
     protected int MOR;  // wspolczynnik pekania drewna [MPa]
     protected int MOE;  // wspolczynnik elastycznosci [MPa]
     protected int Cd;   // wspolczynnik tarcia

@@ -1,3 +1,5 @@
+package MiSS;
+
 /**
  * Created by Patrycjaa on 2016-11-28.
  */

@@ -1,3 +1,5 @@
+package MiSS;
+
 /**
  * Przeplyw informacji podczas trwania symulacji, przesylanie danych do interfejsu uzytkownika
  */

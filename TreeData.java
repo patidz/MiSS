@@ -1,3 +1,5 @@
+package MiSS;
+
 /**
  * Zarzadzanie klasami zwiazanymi z modelem lamliwosci drzew
  */

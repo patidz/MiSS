@@ -1,3 +1,5 @@
+package MiSS;
+
 /**
  * Rysowanie lasu i wiru
  */
