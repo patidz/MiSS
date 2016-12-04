@@ -30,7 +30,7 @@ public class MenuScreen implements ScreenWithStage {
 	private final int MAX_FOREST_SIZE = 1000;
 	private final int MIN_RADIUS = 5;
 	private final int MAX_RADIUS = 25;
-	private final int MIN_SPEED = 10;
+    	public static int MIN_SPEED = 10;
 	private final int MAX_SPEED = 50;
 	
 	private final SpriteBatch batch;
