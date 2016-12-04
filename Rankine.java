@@ -1,17 +1,24 @@
 package MiSS;
-
-/**
- * Implementacja modelu Rankine
- */
+import java.lang.*;
 public class Rankine extends AbstractVortexModel {
-    protected double R_max;
-    protected double Vr_max;
-    protected double Vt_max;
-    protected Speeds speeds;
+    protected final double Vx;
+    protected final double Vy;
+    protected final double R_max;
+    protected final double Vr_max;
+    protected final double Vt_max;
+    protected final Speeds speeds;
 
-    public Rankine() {}
+    public Rankine(double r_max, double vx, double vy, double vr_max, double vt_max, Speeds speeds) {
+        R_max = r_max;
+        Vx = vx;
+        Vy = vy;
+        Vr_max = vr_max;
+        Vt_max = vt_max;
+        this.speeds = speeds;
+    }
 
     @Override
+    /*6*/
     Speeds calculateWind(int treeX, int treeY) {
         double Vr=0, Vt=0;
         double r = Math.abs(getOrigin().orig_x - treeX)*Math.abs(getOrigin().orig_y - treeY)*0.5;
@@ -26,7 +33,8 @@ public class Rankine extends AbstractVortexModel {
         speeds.Vt = Vt;
         return speeds;
     }
-    class Speeds{
+
+    public static class Speeds{
         double Vr;
         double Vt;
     }
