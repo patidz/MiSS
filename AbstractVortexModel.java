@@ -5,8 +5,8 @@ package MiSS;
  */
 public abstract class AbstractVortexModel {
     class Origins{
-        int orig_x;
-        int orig_y;
+        double orig_x;
+        double orig_y;
     }
     protected Origins origin;
     protected int X[];
@@ -15,9 +15,8 @@ public abstract class AbstractVortexModel {
     protected double vf; //predkosc translacji [m/s]
     protected double angle;
     private int[] speedMatrix;
-    //private int[] uMatrix;
-    //private int[] vMatrix;
-    //private int[] wMatrix;
+    private int[] uMatrix;
+    private int[] vMatrix;
 
     public AbstractVortexModel() {
         //origin = new Origins();
@@ -45,8 +44,10 @@ public abstract class AbstractVortexModel {
 
     /**
      * przypisuje srodek tornada w ukladzie wspolrzednych
+     * @param _orig_x
+     * @param _orig_y
      */
-    void setOrigin(int _orig_x, int _orig_y){
+    void setOrigin(double _orig_x, double _orig_y){
         origin.orig_x = _orig_x;
         origin.orig_y = _orig_y;
     };
@@ -59,28 +60,31 @@ public abstract class AbstractVortexModel {
     };
 
     /**
-     * wyliczenie miejsca nowego srodka tornada po uplywie czasu t
+     * wyliczenie miejsca nowego srodka tornada po uplywie czasu t [s]
      */
-   Origins calculateNewCenter(int t){
+    /*7*/
+    void calculateNewCenter(int t){
         double distance = getVf() * t;
         int distanceX = (int)(distance * Math.cos(getAngle()));
         int distanceY = (int)(distance * Math.sin(getAngle()));
         setOrigin(getOrigin().orig_x + distanceX, getOrigin().orig_y + distanceY);
-        return origin;
     };
+
+    public void calculateNewCenter(double speedx, double speedy){
+        setOrigin(getOrigin().orig_x + speedx, getOrigin().orig_y + speedy);
+    }
+
 
     /**
      * oblicza predkosc translacji tornada
      * @return
      */
     double getVf(){
-        return 0;
+        return vf;
     };
-    
     double getAngle(){
         return angle;
     };
-    
-    //void calculateWindSpeedMatrix() {} //??
+    void calculateWindSpeedMatrix() {}
 
 }
