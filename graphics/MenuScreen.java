@@ -22,16 +22,16 @@ public class MenuScreen implements ScreenWithStage {
 	/**
 	 * sample constants, to be changed
 	 */
-	private final int MIN_TREE_HEIGHT = 2;
-	private final int MAX_TREE_HEIGHT = 10;
-	private final int MIN_DISTRIBUTION = 0;
-	private final int MAX_DISTRIBUTION = 2;
-	private final int MIN_FOREST_SIZE = 100;
-	private final int MAX_FOREST_SIZE = 1000;
-	private final int MIN_RADIUS = 5;
-	private final int MAX_RADIUS = 25;
-    	public static int MIN_SPEED = 10;
-	private final int MAX_SPEED = 50;
+	public static final int MIN_TREE_HEIGHT = 2;
+	public static final int MAX_TREE_HEIGHT = 10;
+	public static final int MIN_DISTRIBUTION = 0;
+	public static final int MAX_DISTRIBUTION = 2;
+	public static final int MIN_FOREST_SIZE = 800;
+	public static final int MAX_FOREST_SIZE = 1600;
+	public static final int MIN_RADIUS = 5;
+	public static final int MAX_RADIUS = 25;
+    public static final int MIN_SPEED = 10;
+    public static final int MAX_SPEED = 50;
 	
 	private final SpriteBatch batch;
 	private final Texture backgroundTexture;
@@ -132,6 +132,7 @@ public class MenuScreen implements ScreenWithStage {
 			String val = maxTreeHeightField.getText();
 			if(val.equals("random")) {
 				maxTreeHeight = random.nextInt(MAX_TREE_HEIGHT-MIN_TREE_HEIGHT)+MIN_TREE_HEIGHT;
+				if(maxTreeHeight == MIN_TREE_HEIGHT) ++maxTreeHeight;
 			} else {
 				maxTreeHeight = Integer.parseInt(val);
 			}
@@ -147,6 +148,7 @@ public class MenuScreen implements ScreenWithStage {
 			String val = distributionField.getText();
 			if(val.equals("random")) {
 				distribution = random.nextInt(MAX_DISTRIBUTION-MIN_DISTRIBUTION)+MIN_DISTRIBUTION;
+				if(distribution == MIN_DISTRIBUTION) ++distribution;
 			} else {
 				distribution = Integer.parseInt(val);
 			}
@@ -162,6 +164,7 @@ public class MenuScreen implements ScreenWithStage {
 			String val = forestSizeField.getText();
 			if(val.equals("random")) {
 				forestSize = random.nextInt(MAX_FOREST_SIZE-MIN_FOREST_SIZE)+MIN_FOREST_SIZE;
+				if(forestSize == MIN_FOREST_SIZE) ++forestSize;
 			} else {
 				forestSize = Integer.parseInt(val);
 			}
@@ -201,6 +204,7 @@ public class MenuScreen implements ScreenWithStage {
 			String val = radiusField.getText();
 			if(val.equals("random")) {
 				radius = random.nextInt(MAX_RADIUS-MIN_RADIUS)+MIN_RADIUS;
+				if(radius == MIN_RADIUS) ++radius;
 			} else {
 				radius = Integer.parseInt(val);
 			}
@@ -216,6 +220,7 @@ public class MenuScreen implements ScreenWithStage {
 			String val = speedField.getText();
 			if(val.equals("random")) {
 				speed = random.nextInt(MAX_SPEED-MIN_SPEED)+MIN_SPEED;
+				if(speed == MIN_SPEED) ++speed;
 			} else {
 				speed = Integer.parseInt(val);
 			}

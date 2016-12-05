@@ -5,7 +5,7 @@ package MiSS;
  */
 public class Simulation {
     protected VortexData vortexData;
-    protected TreeData treeData;
+    //protected TreeData treeData;
 
     void simulation(){}
 
@@ -13,9 +13,9 @@ public class Simulation {
      * obliczanie wynikowej macierzy lasu po przejsciu tornada
      * @param
      */
-    TreeData doSimulation(/* vortex_axis, forest_axis, broken_label, overtaken_label */){
+    /*TreeData doSimulation(/* vortex_axis, forest_axis, broken_label, overtaken_label *){
         return treeData;
-    }
+    }*/
 
     /**
      * ustawia parametry poczatkowe modelu wiru

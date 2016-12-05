@@ -11,20 +11,21 @@ public class Tree extends AbstractTreeModel{ // HWINDData
     protected final double f_RW = 0.3;   // stosunek wagi gleby wokol korzeni do masy calego drzewa w [%]
 
     protected boolean standing;
-    protected final double x;
-    protected final double y;
-    protected final int height;   // wysokosc drzewa
+    protected final float x;
+    protected final float y;
+    protected final float height;   // wysokosc drzewa
     protected final int dbh = 1;  // srednica drzewa na wysokosci piersi człowieka (1.3 m) [m]
-    protected final int Crown_mass;   // masa korony [kg]
-    protected final int Stem_mass;    // masa pnia [kg]
-    protected final int R_mass;   // masa korzeni [kg]
-    protected final int R_depth;  // glebokosc korzeni [m]
-    protected final int Crown_depth;  // wysokosc korony [m]
-    protected final int Crown_width;  // szerokosc korony [m]
+    protected final float Crown_mass;   // masa korony [kg]
+    protected final float Stem_mass;    // masa pnia [kg]
+    protected final float R_mass;   // masa korzeni [kg]
+    protected final float R_depth;  // glebokosc korzeni [m]
+    protected final float Crown_depth;  // wysokosc korony [m]
+    protected final float Crown_width;  // szerokosc korony [m]
     //protected miss.Tree ScotsPines;
     // miss.Tree NorwaySpruces;
 
-    public Tree(int crown_depth, double x, double y, int height, int crown_mass, int stem_mass, int r_mass, int r_depth, int crown_width) {
+    public Tree(float crown_depth, float x, float y, float height, float crown_mass, 
+    		float stem_mass, float r_mass, float r_depth, float crown_width) {
         Crown_depth = crown_depth;
         this.x = x;
         this.y = y;
@@ -51,4 +52,14 @@ public class Tree extends AbstractTreeModel{ // HWINDData
         return 0;
     }
 
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+    
+    
 }

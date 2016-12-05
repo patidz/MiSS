@@ -19,7 +19,7 @@ public abstract class AbstractVortexModel {
     private int[] vMatrix;
 
     public AbstractVortexModel() {
-        //origin = new Origins();
+        origin = new Origins();
     }
 
     /**

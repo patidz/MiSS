@@ -1,10 +1,19 @@
 package MiSS.graphics;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import miss.Rankine;
-import miss.Tree;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
+import MiSS.Rankine;
+import MiSS.Tree;
 
 public class SimulationScreen implements ScreenWithStage {
 
@@ -17,16 +26,26 @@ public class SimulationScreen implements ScreenWithStage {
     private final Integer radius;
     private final Integer speed;
 
-    private ArrayList<Tree> trees;
-    private Rankine vortex;
-    private Random random;
+    private final ArrayList<Tree> trees;
+    private final Rankine vortex;
+    private final Random random;
 
     private final double speedx;
     private final double speedy;
+    
+	private final SpriteBatch batch;
+	private final Texture treeTexture;
+	Texture tex = new Texture(Gdx.files.internal("./forest.jpg"));
+
+	private Vector2 touchFlag;
+	private Vector2 camPositionFlag;
+	
+	private final OrthographicCamera cam;
 
     public SimulationScreen(Integer maxTreeHeight, Integer distribution, Integer forestSize,
                             Integer startingPointX,	Integer startingPointY, Integer radius, Integer speed) {
-        stage = new Stage();
+
+    	stage = new Stage();
         this.maxTreeHeight = maxTreeHeight;
         this.distribution = distribution;
         this.forestSize = forestSize;
@@ -48,30 +67,56 @@ public class SimulationScreen implements ScreenWithStage {
         speedx = random.nextInt(this.speed - MenuScreen.MIN_SPEED)+MenuScreen.MIN_SPEED;
         speedy = random.nextInt(this.speed - MenuScreen.MIN_SPEED)+MenuScreen.MIN_SPEED;
 
-
         vortex = new Rankine(radius, speedx, speedy, 0, 0, null);
         trees = new ArrayList<Tree>();
 
+		batch = new SpriteBatch();
+		treeTexture = new Texture(Gdx.files.internal("./tree.png"));
+		
+		cam = new OrthographicCamera(Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT);
+		cam.position.set(cam.viewportWidth/2,cam.viewportHeight/2,0);
+		cam.update();
+		
+		touchFlag = null;
+		camPositionFlag = null;
+		
+		Gdx.input.setInputProcessor(stage);
+		
         generateTrees();
 
     }
 
     private void generateTrees(){
-        double x,y =0;///random
-
-        //Tree t = new Tree(int crown_depth, double x, double y, int height, int dbh, int crown_mass, int stem_mass, int r_mass, int r_depth, int crown_width);
-        /*
-Dane do klasy Tree
-wysokość = x [m]
-średnica = x [cm]
-masa korony = 2*x [kg]
-wysokość korony = 0.5*x [m]
-szerokość korony = 0.25*x [m]
-masa pnia = x*50
-masa korzenia = x*0.02
-wysokosc korzenia r_depth = x*0.04
-predkosc przewrocenia = 36 [m/s]
-predkosc zlamania = 39 [m/s]*/
+    	int rowHeight = 50;//szerokosc jednego paska
+    	int sideBound = 30;//odleglosc od lewej i prawej krawedzi
+    	int minStep = 30;//min odleglosc miedzy rzewami
+    	int maxStep = 50;//max odleglosc miedzy rzewami
+    	
+    	for(int i=0, n=forestSize/rowHeight ;i<=n;++i) {
+    		int j=sideBound;
+    		while(j<forestSize-sideBound) {
+		    	float height = random.nextInt(maxTreeHeight-MenuScreen.MIN_TREE_HEIGHT)+MenuScreen.MIN_TREE_HEIGHT;
+		    	float x=j;
+		    	float y=forestSize-i*rowHeight-random.nextInt(rowHeight)*.7f;
+		        Tree t = new Tree(
+		        		height*.5f, 
+		        		x, 
+		        		y, 
+		        		height, 
+		        		2*height, 
+		        		height*50, 
+		        		height*.02f, 
+		        		height*.04f, 
+		        		height/4);
+		        trees.add(t);
+		        /*
+		        Image treeActor = new Image(treeTexture);
+		        treeActor.setX(x);
+		        treeActor.setY(y);
+		        stage.addActor(treeActor);*/
+		        j += random.nextInt(maxStep-minStep)+minStep;
+    		}
+    	}
     }
 
     private void updateVortex(){
@@ -86,14 +131,50 @@ predkosc zlamania = 39 [m/s]*/
 
     @Override
     public void show() {
-
+		Gdx.graphics.setContinuousRendering(true);
     }
 
     @Override
     public void render(float delta) {
         updateVortex();
         updateTrees();
+    	handleInput();
+		cam.update();
+		batch.setProjectionMatrix(cam.combined);
         //rysowanieeeee
+		Gdx.gl.glClearColor(0, 0, .5f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		this.batch.begin();
+		for(int i=0 ; i<trees.size() ; ++i) {
+			Tree t = trees.get(i);
+			this.batch.draw(treeTexture, t.getX(), t.getY());
+		}
+		this.batch.end();
+    }
+    
+    private void handleInput() {
+    	if(Gdx.input.isTouched()) {
+    		if(touchFlag == null && camPositionFlag == null) {
+    			touchFlag = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+    			camPositionFlag = new Vector2(cam.position.x,cam.position.y);
+    		} else {
+    			float diffX = Gdx.input.getX()-touchFlag.x;
+    			float diffY = Gdx.input.getY()-touchFlag.y;
+    			
+    			float newX = camPositionFlag.x-diffX;
+    			if(newX < cam.viewportWidth/2) newX = cam.viewportWidth/2;
+    			if(newX > forestSize-cam.viewportWidth/2) newX = forestSize-cam.viewportWidth/2;
+    			
+    			float newY = camPositionFlag.y+diffY;
+    			if(newY < cam.viewportHeight/2) newY = cam.viewportHeight/2;
+    			if(newY > forestSize-cam.viewportHeight/2) newY = forestSize-cam.viewportHeight/2;
+    			
+    			cam.position.set(newX,newY,0);
+    		}
+    	} else {
+    		touchFlag = null;
+    		camPositionFlag = null;
+    	}
     }
 
     @Override
@@ -118,14 +199,13 @@ predkosc zlamania = 39 [m/s]*/
 
     @Override
     public void dispose() {
-
+    	stage.dispose();
+    	treeTexture.dispose();
     }
 
     @Override
     public Stage getStage() {
         return stage;
     }
-
-
 
 }
