@@ -26,7 +26,7 @@ public class SimulationScreen implements ScreenWithStage {
     private final Integer radius;
     private final Integer speed;
 
-    private final ArrayList<Tree> trees;
+    private static ArrayList<Tree> trees = null;
     private final Rankine vortex;
     private final Random random;
 
@@ -124,9 +124,26 @@ public class SimulationScreen implements ScreenWithStage {
     }
 
     private void updateTrees(){
+        int state = 0;
         for(int i=0;i<this.trees.size();++i) {
-            trees.get(i);//
+            Tree tree = trees.get(i);
+            if (!tree.state()) continue;
+            else {
+                state = tree.calculateTreeForce(speed);
+                if (state == 2)
+                    tree.setFallen();
+                else if (state == 1)
+                    tree.setBroken();
+            }
         }
+    }
+
+    public static int treeCounter() {
+        return trees.size();
+    }
+
+    public static Tree getTree(int i) {
+        return trees.get(i);
     }
 
     @Override
