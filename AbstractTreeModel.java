@@ -17,7 +17,7 @@ public abstract class AbstractTreeModel {
      * @param treeJ - polozenie drzewa na macierzy X
      * @return 0 if drzewo stoi, 1 if drzewo zlamane, 2 if drzewo przewrocone
      */
-    public abstract double calculateTreeForce(Tree tree, double speed, int treeI, int treeJ);
+    public abstract double calculateTreeForce(double speed);
 
     /**
      * metoda zwracajaca macierze ukladu odniesienia
