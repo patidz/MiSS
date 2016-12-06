@@ -4,19 +4,7 @@ package MiSS;
  * Created by Patrycjaa on 2016-11-28.
  */
 public class HWIND extends AbstractTreeModel{
-    private double ro;
-    private double k;
-    private double g;   // 9.81 m/s2
-    private int spacing;    // odleglosc miedzy drzewami
-    private int gapSize;
-    private double meanTreeHeight;
-
-    /**
-     *
-     * @param treeHeights - wysokosci drzew w lesie (macierz X)
-     */
-    void initialize(double[] treeHeights) {}
-
+    
     /**
      *
      * @param tree - struktura opisujaca drzewo
@@ -26,7 +14,7 @@ public class HWIND extends AbstractTreeModel{
      * @return 0 if drzewo stoi, 1 if drzewo zlamane, 2 if drzewo przewrocone
      */
     @Override
-    public double calculateTreeForce(Tree tree, double speed, int treeI, int treeJ){
+    public double calculateTreeForce(double speed){
         return 0;
     }
 
