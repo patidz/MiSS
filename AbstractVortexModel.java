@@ -26,7 +26,7 @@ public abstract class AbstractVortexModel {
      * oblicza macierz predkosci (speedMatrix) i macierze wektorow wiatru (uMatrix i vMatrix)
      * na podstawie aktualnego stanu klasy
      */
-    abstract Rankine.Speeds calculateWind(int treeX, int treeY);
+    abstract Rankine.Speeds calculateWind(Tree tree);
 
     void setX(int[] _X){};
     void setY(int[] _Y){};
