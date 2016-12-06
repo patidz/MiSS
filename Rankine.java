@@ -19,9 +19,9 @@ public class Rankine extends AbstractVortexModel {
 
     @Override
     /*6*/
-    Speeds calculateWind(int treeX, int treeY) {
+    public Speeds calculateWind(Tree tree) {
         double Vr=0, Vt=0;
-        double r = Math.abs(getOrigin().orig_x - treeX)*Math.abs(getOrigin().orig_y - treeY)*0.5;
+        double r = Math.abs(getOrigin().orig_x - tree.getX())*Math.abs(getOrigin().orig_y - tree.getY())*0.5;
         if (r <= R_max){
             Vr = Vr_max * Math.pow((r/R_max),0.6);
             Vt = Vt_max * (r/R_max);
