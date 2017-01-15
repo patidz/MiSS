@@ -3,6 +3,7 @@ package miss;
 import com.mygdx.game.SimulationScreen;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Struktura drzew MiSS.miss.Tree
@@ -27,6 +28,10 @@ public class Tree extends AbstractTreeModel{ // HWINDData
     protected final float R_depth;  // glebokosc korzeni [m]
     protected final float Crown_depth;  // wysokosc korony [m]
     protected final float Crown_width;  // szerokosc korony [m]
+    public float angle = 0;
+    public float destAngle;
+    private Random random = new Random();
+    public final int fallDirection = (random.nextBoolean()) ? 1 : -1 ;
     //protected miss.Tree ScotsPines;
     // miss.Tree NorwaySpruces;
 
@@ -55,12 +60,17 @@ public class Tree extends AbstractTreeModel{ // HWINDData
         double rootResistance = rootResistance(this)*10;
         double stemResistance = stemResistance(this);
         System.out.println(totalBendingMoment+" > "+ rootResistance);
-        if (totalBendingMoment > rootResistance)
+        if (totalBendingMoment > rootResistance) {
             state =  states.FALLEN;
-        else if (totalBendingMoment > stemResistance)
+            this.destAngle = 90;
+        }
+        else if (totalBendingMoment > stemResistance) {
             state =  states.BROKEN;
-        else
+            this.destAngle = 45;
+        }
+        else {
             state =  states.STANDING;
+        }
     }
 
     public states getState() {

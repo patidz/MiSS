@@ -198,8 +198,9 @@ public class SimulationScreen implements ScreenWithStage {
                 angle = 90;
             if (t.getState()== AbstractTreeModel.states.BROKEN)
                 angle = 45;
+            if(t.angle < t.destAngle) t.angle += 2.5f;
             this.batch.draw(treeTextureRegion, t.getX(), t.getY(), 0, 0,
-                    20,35+8*t.getHeight(),1 ,1, angle);
+                    20,35+8*t.getHeight(),1 ,1, t.angle*t.fallDirection);
             /*
                         if (t.isStanding()) {
                 double distance = Math.sqrt(Math.pow(t.getX() - this.vortex.getOrigin().getOrig_x(), 2)
