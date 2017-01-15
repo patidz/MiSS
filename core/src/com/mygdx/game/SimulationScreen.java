@@ -48,6 +48,8 @@ public class SimulationScreen implements ScreenWithStage {
     private Vector2 camPositionFlag;
 
     private final OrthographicCamera cam;
+    
+    private final Texture bgtex;
 
     public SimulationScreen(Integer maxTreeHeight, Integer distribution, Integer forestSize,
                             Integer startingPointX,	Integer startingPointY, Integer radius, Integer speed) {
@@ -98,6 +100,8 @@ public class SimulationScreen implements ScreenWithStage {
         generateTrees();
 
         shapeRenderer = new ShapeRenderer();
+        
+        bgtex = new Texture(Gdx.files.internal("./texture.png"));
     }
 
     private void generateTrees(){
@@ -193,6 +197,22 @@ public class SimulationScreen implements ScreenWithStage {
         Gdx.gl.glClearColor(0, 0, .5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         this.batch.begin();
+        /*batch.draw(
+    			bgtex, 
+    			cam.position.x-Gdx.graphics.getWidth()/2, 
+    			cam.position.y-Gdx.graphics.getHeight()/2, 
+    			Gdx.graphics.getWidth(), 
+    			Gdx.graphics.getHeight());*/
+        for(float i=0 ; i<=Gdx.graphics.getWidth()+cam.viewportWidth*2 ; i=i+cam.viewportWidth) {
+        	for(float j=0 ; j<=Gdx.graphics.getHeight()+cam.viewportHeight*2 ; j=j+cam.viewportHeight) {
+        		batch.draw(
+            			bgtex, 
+            			i, 
+            			j, 
+            			cam.viewportWidth, 
+            			cam.viewportHeight);
+        	}
+        }
         for(int i=0 ; i<trees.size() ; ++i) {
             Tree t = trees.get(i);
             float angle = 0;
