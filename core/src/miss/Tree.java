@@ -11,7 +11,7 @@ import java.util.Random;
 public class Tree extends AbstractTreeModel{ // HWINDData
 
     protected final double MOR = 39.1;  // wspolczynnik pekania drewna [MPa]
-    protected final double MOE = 7000;  // wspolczynnik elastycznosci [MPa]
+    protected final double MOE = 7000.0;  // wspolczynnik elastycznosci [MPa]
     protected final double Cd = 0.29;   // wspolczynnik tarcia
     protected final double airDensity = 1.226;
     protected final double f_RW = 0.3;   // stosunek wagi gleby wokol korzeni do masy calego drzewa w [%]
@@ -21,7 +21,7 @@ public class Tree extends AbstractTreeModel{ // HWINDData
     protected final float x;
     protected final float y;
     protected final float height;   // wysokosc drzewa
-    protected final int dbh = 1;  // srednica drzewa na wysokosci piersi cz�owieka (1.3 m) [m]
+    protected final float dbh;  // srednica drzewa na wysokosci piersi cz�owieka (1.3 m) [m]
     protected final float Crown_mass;   // masa korony [kg]
     protected final float Stem_mass;    // masa pnia [kg]
     protected final float R_mass;   // masa korzeni [kg]
@@ -35,11 +35,12 @@ public class Tree extends AbstractTreeModel{ // HWINDData
     //protected miss.Tree ScotsPines;
     // miss.Tree NorwaySpruces;
 
-    public Tree(float crown_depth, float x, float y, float height, float crown_mass, float stem_mass, float r_mass, float r_depth, float crown_width) {
+    public Tree(float crown_depth, float x, float y, float height, float radius, float crown_mass, float stem_mass, float r_mass, float r_depth, float crown_width) {
         Crown_depth = crown_depth;
         this.x = x;
         this.y = y;
         this.height = height;
+        dbh = radius;
         Crown_mass = crown_mass;
         Stem_mass = stem_mass;
         R_mass = r_mass;
@@ -57,20 +58,27 @@ public class Tree extends AbstractTreeModel{ // HWINDData
 
     public void calculateTreeForce( double speed){
         double totalBendingMoment = Math.abs(totalBendingMoment(this, speed));
-        double rootResistance = rootResistance(this)*10;
+        double rootResistance = rootResistance(this);
         double stemResistance = stemResistance(this);
-        System.out.println(totalBendingMoment+" > "+ rootResistance);
-        if (totalBendingMoment > rootResistance) {
-            state =  states.FALLEN;
-            this.destAngle = 90;
-        }
-        else if (totalBendingMoment > stemResistance) {
+
+        String s = "";
+
+        if (totalBendingMoment > stemResistance) {
             state =  states.BROKEN;
             this.destAngle = 45;
-        }
-        else {
+            s = "B";
+
+            if (totalBendingMoment > rootResistance) {
+                state =  states.FALLEN;
+                this.destAngle = 90;
+                s = "F";
+            }
+        } else {
             state =  states.STANDING;
+            s = " ";
         }
+        String result = String.format(" %.3f > %.3f > %.3f", totalBendingMoment, rootResistance, stemResistance);
+        System.out.println(s + result);
     }
 
     public states getState() {
@@ -84,7 +92,13 @@ public class Tree extends AbstractTreeModel{ // HWINDData
     private double totalBendingMoment(Tree tree, double speed) {
         double total = 0;
         for (int i = 0; i < height; ++i) {
-            total += gustFactor(tree) * gapFactor() * (verticalWindSpeed(tree, i, speed) * 1 + gravityForce(tree, i)*horizontalDisplacement(tree, i));
+            double gustF = gustFactor(tree);
+            double gapF = gapFactor();
+            double vWSpeed = verticalWindSpeed(tree, i, speed);
+            double gravF = gravityForce(tree, i);
+            double h = horizontalDisplacement(tree, i);
+            double p = (vWSpeed * 1 + gravF * h);
+            total += gustF * gapF * p;
         }
         return total;
     }
@@ -105,7 +119,7 @@ public class Tree extends AbstractTreeModel{ // HWINDData
     }
 
     private double stemResistance(Tree tree) {
-        return (Math.PI/32)*MOR*Math.pow(tree.dbh,3);
+        return (Math.PI/32.0)*MOR*Math.pow(tree.dbh,3);
     }
 
     private double gapFactor() {    //15m
@@ -115,39 +129,58 @@ public class Tree extends AbstractTreeModel{ // HWINDData
     }
 
     private double gustFactor(Tree tree) { //gap=1m
-        double gust_mean = (0.68*(1/meanTreeHeight()) - 0.0385) + (-0.68*(1/meanTreeHeight())+0.4875)*
-                Math.pow(1.7239*(1/meanTreeHeight()+0.0316),horizontalDisplacement2(tree)/meanTreeHeight());
-        double gust_max = (2.7193*(1/meanTreeHeight()) - 0.061) + (-1.273*(1/meanTreeHeight())+9.9701)*
-                Math.pow(1.1127*(1/meanTreeHeight()+0.0311),horizontalDisplacement2(tree)/meanTreeHeight());
+        double s = 1.0;
+        double h = meanTreeHeight();
+        double sh = s/h;
+        double x = horizontalDisplacement(tree);
+        double pow = x/h;
+
+        double gme1 = (0.68*sh - 0.0385);
+        double gme2 = (-0.68*sh+0.4875);
+        double gme3b = (1.7239*sh+0.0316);
+        double gme3p = Math.pow(gme3b,pow);
+        double gust_mean = gme1 + gme2 * gme3p;
+
+        double gma1 = (2.7193*sh - 0.061);
+        double gma2 = (-1.273*sh+9.9701);
+        double gma3b = (1.1127*sh+0.0311);
+        double gma3p = Math.pow(gma3b,pow);
+        double gust_max = gma1 + gma2 * gma3p;
+
         return gust_max/gust_mean;
     }
 
     private double horizontalDisplacement(Tree tree, int z) {
         double a = height - Crown_depth/2;
         double b = Crown_depth/2;
-        double l = height - z;
+        double lz = height - z;
+        double lb = lz-b;
         double I = Math.PI*Math.pow(dbh,4)/64;
+        double vWSpeed = verticalWindSpeed(tree, z, 10);
+        double denominator = (6*MOE*I);
+
+        double hd;
         if (z <= a) {
-            return (verticalWindSpeed(tree, z, 10)*a*a*height*(3-(a/height)-3*l/height))/(6*MOE*I);
+            double a2h = Math.pow(a,2) * height;
+            double ah = a/height;
+            double l3zh = 3*lz/height;
+            double p = (3 - ah - l3zh);
+            hd = (vWSpeed * a2h * p) / denominator;
+        } else {
+            double a3 = Math.pow(a,3);
+            double lb3a = 3*lb/a;
+            double lb3 = Math.pow(lb,3);
+            double pp = lb3/a3;
+            double p = (2 - lb3a + pp);
+            hd = (vWSpeed * a3 * p) / denominator;
         }
-        else if (z > a) {
-            return (verticalWindSpeed(tree, z, 10)*a*a*a*(2-3*(l-b)/a+Math.pow(l-b,3)/Math.pow(a,3)))/(6*MOE*I);
-        }
-        return 0;
+        return hd;
     }
 
-    private double horizontalDisplacement2(Tree tree) {
+    private double horizontalDisplacement(Tree tree) {
         double ret = 0;
         for (int z = 0; z < (int)height; ++z) {
-            double a = height - Crown_depth / 2;
-            double b = Crown_depth / 2;
-            double l = height - z;
-            double I = Math.PI * Math.pow(dbh, 4) / 64;
-            if (z <= a) {
-                ret =+ (verticalWindSpeed(tree, z, 10) * a * a * height * (3 - (a / height) - 3 * l / height)) / (6 * MOE * I);
-            } else if (z > a) {
-                ret += (verticalWindSpeed(tree, z, 10) * a * a * a * (2 - 3 * (l - b) / a + Math.pow(l - b, 3) / Math.pow(a, 3))) / (6 * MOE * I);
-            }
+            ret += horizontalDisplacement(tree, z);
         }
         return ret;
     }

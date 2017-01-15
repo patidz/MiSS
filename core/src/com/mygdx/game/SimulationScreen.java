@@ -109,19 +109,21 @@ public class SimulationScreen implements ScreenWithStage {
         for(int i=0, n=forestSize/rowHeight ;i<=n;++i) {
             int j=sideBound;
             while(j<forestSize-sideBound) {
-                float height = random.nextInt(maxTreeHeight-MenuScreen.MIN_TREE_HEIGHT+1)+MenuScreen.MIN_TREE_HEIGHT;
+                float height = random.nextFloat() * (maxTreeHeight.floatValue() - (float)MenuScreen.MIN_TREE_HEIGHT) + (float)MenuScreen.MIN_TREE_HEIGHT;
                 float x=j;
                 float y=forestSize-i*rowHeight-random.nextInt(rowHeight)*.7f;
+                float crown_mass = 0.22f*(float)Math.pow(height,2)-26.0f;
                 Tree t = new Tree(
                         height*.5f,
                         x,
                         y,
                         height,
-                        2*height,
-                        height*50,
-                        height*.02f,
-                        height*.04f,
-                        height/4);
+                        height*0.15f,
+                        crown_mass,
+                        crown_mass*3.0f,
+                        crown_mass*24.0f,
+                        height*0.035f,
+                        height/4.0f);
                 trees.add(t);
 		        /*
 		        Image treeActor = new Image(treeTexture);

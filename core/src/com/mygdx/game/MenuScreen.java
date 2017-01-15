@@ -22,8 +22,8 @@ public class MenuScreen implements ScreenWithStage {
     /**
      * sample constants, to be changed
      */
-    public static final int MIN_TREE_HEIGHT = 2;
-    public static final int MAX_TREE_HEIGHT = 10;
+    public static final int MIN_TREE_HEIGHT = 12;
+    public static final int MAX_TREE_HEIGHT = 20;
     public static final int MIN_DISTRIBUTION = 0;
     public static final int MAX_DISTRIBUTION = 2;
     public static final int MIN_FOREST_SIZE = 800;
