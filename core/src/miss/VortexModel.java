@@ -1,8 +1,8 @@
 package miss; /**
- * Implementacja modelu MiSS.miss.Rankine
+ * Implementacja modelu MiSS.miss.VortexModel
  */
 import java.lang.*;
-public class Rankine extends AbstractVortexModel {
+public class VortexModel extends AbstractVortexModel {
     protected final double Vx;
     protected final double Vy;
     protected final double R_max;
@@ -11,7 +11,7 @@ public class Rankine extends AbstractVortexModel {
     protected final Speeds speeds;
     public int currentRotation;
 
-    public Rankine(double r_max, double vx, double vy, double vr_max, double vt_max, Speeds speeds) {
+    public VortexModel(double r_max, double vx, double vy, double vr_max, double vt_max, Speeds speeds) {
         R_max = r_max;
         Vx = vx;
         Vy = vy;

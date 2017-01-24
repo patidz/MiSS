@@ -1,17 +1,15 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
 import java.util.ArrayList;
 import java.util.Random;
 import miss.*;
@@ -28,7 +26,7 @@ public class SimulationScreen implements ScreenWithStage {
     private final Integer speed;
 
     private static ArrayList<Tree> trees;
-    private Rankine vortex;
+    private VortexModel vortex;
     private Random random;
 
     private final double speedx;
@@ -73,7 +71,7 @@ public class SimulationScreen implements ScreenWithStage {
         speedy = random.nextInt(this.speed - MenuScreen.MIN_SPEED_C/30 + 1)+MenuScreen.MIN_SPEED_C/30;
 
         double s = Math.sqrt(speedx*speedx+speedy*speedy)/(radius*radius);
-        vortex = new Rankine(radius, speedx, speedy, s, 0, new Rankine.Speeds());
+        vortex = new VortexModel(radius, speedx, speedy, s, 0, new VortexModel.Speeds());
         trees = new ArrayList<Tree>();
 
         vortex.setOrigin(0,0);
@@ -144,7 +142,7 @@ public class SimulationScreen implements ScreenWithStage {
                 double distance = Math.sqrt(Math.pow(t.getX() - this.vortex.getOrigin().getOrig_x(), 2)
                         + Math.pow(t.getY() - this.vortex.getOrigin().getOrig_y(), 2));
                 if (distance <= this.radius) {
-                    Rankine.Speeds speeds = this.vortex.calculateWind(t,distance);
+                    VortexModel.Speeds speeds = this.vortex.calculateWind(t,distance);
                     t.calculateTreeForce(speeds.getVr());
                 }
             }
