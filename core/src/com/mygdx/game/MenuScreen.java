@@ -30,8 +30,10 @@ public class MenuScreen implements ScreenWithStage {
     public static final int MAX_FOREST_SIZE = 1600;
     public static final int MIN_RADIUS = 100;
     public static final int MAX_RADIUS = 250;
-    public static final int MIN_SPEED = 1;
-    public static final int MAX_SPEED = 10;
+    private static final int MAX_SPEED = 350;
+    private static final int MIN_SPEED = 100;
+    public static int MAX_SPEED_C;
+    public static int MIN_SPEED_C;
 
     private final SpriteBatch batch;
     private final Texture backgroundTexture;
@@ -49,6 +51,9 @@ public class MenuScreen implements ScreenWithStage {
     private final Random random;
 
     public MenuScreen() {
+        MAX_SPEED_C = cSpeed(MAX_SPEED);
+        MIN_SPEED_C = cSpeed(MIN_SPEED);
+
         batch = new SpriteBatch();
         backgroundTexture = new Texture(Gdx.files.internal("./forest.jpg"));
         stage = new Stage();
@@ -63,6 +68,10 @@ public class MenuScreen implements ScreenWithStage {
         speedField = new TextField("random", skin);
 
         random = new Random();
+    }
+
+    private Integer cSpeed(Integer speed) {
+        return (speed-80)/18;
     }
 
     @Override
@@ -219,12 +228,12 @@ public class MenuScreen implements ScreenWithStage {
         try {
             String val = speedField.getText();
             if(val.equals("random")) {
-                speed = random.nextInt(MAX_SPEED-MIN_SPEED)+MIN_SPEED;
-                if(speed == MIN_SPEED) ++speed;
+                speed = random.nextInt(MAX_SPEED_C-MIN_SPEED_C)+MIN_SPEED_C;
+                if(speed == MIN_SPEED_C) ++speed;
             } else {
-                speed = Integer.parseInt(val);
+                speed = cSpeed(Integer.parseInt(val));
             }
-            if(speed > MAX_SPEED || speed < MIN_SPEED) {
+            if(speed > MAX_SPEED_C || speed < MIN_SPEED_C) {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {

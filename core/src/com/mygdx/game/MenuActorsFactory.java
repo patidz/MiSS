@@ -18,10 +18,6 @@ public class MenuActorsFactory {
     private final Table table;
     private final int space;
 
-    public MenuActorsFactory(Stage stage) {
-        this(stage,500,60,3);
-    }
-
     public MenuActorsFactory(Stage stage, Integer width, Integer height, int space) {
         this.width = width;
         this.height = height;
@@ -54,23 +50,9 @@ public class MenuActorsFactory {
         this.table.setX((Gdx.graphics.getWidth()-this.table.getWidth())/2);
     }
 
-    public ArrayList<Actor> getActors() {
-        return actors;
-    }
-
     public void act(float delta) {
         for(int i=0 ; i<this.actors.size() ; ++i) {
             this.actors.get(i).act(delta);
         }
     }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-
 }

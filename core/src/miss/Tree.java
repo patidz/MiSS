@@ -32,8 +32,6 @@ public class Tree extends AbstractTreeModel{ // HWINDData
     public float destAngle;
     private Random random = new Random();
     public final int fallDirection = (random.nextBoolean()) ? 1 : -1 ;
-    //protected miss.Tree ScotsPines;
-    // miss.Tree NorwaySpruces;
 
     public Tree(float crown_depth, float x, float y, float height, float radius, float crown_mass, float stem_mass, float r_mass, float r_depth, float crown_width) {
         Crown_depth = crown_depth;

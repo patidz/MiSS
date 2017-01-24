@@ -4,8 +4,7 @@ package miss;
  * Implementacja modeli lamliwosci drzew
  */
 public abstract class AbstractTreeModel {
-    protected int X[];
-    protected int Y[];
+
     public enum states {STANDING, BROKEN, FALLEN};
     public AbstractTreeModel() {};
 

@@ -38,11 +38,8 @@ public class SimulationScreen implements ScreenWithStage {
     private final ShapeRenderer shapeRenderer;
     private final Texture treeTexture;
     private final Texture vortexTexture;
-    //private Affine2 affine2;
     private TextureRegion textureRegion;
     private TextureRegion treeTextureRegion;
-
-    Texture tex = new Texture(Gdx.files.internal("./forest.jpg"));
 
     private Vector2 touchFlag;
     private Vector2 camPositionFlag;
@@ -72,10 +69,9 @@ public class SimulationScreen implements ScreenWithStage {
         System.out.println("radius " + this.radius);
         System.out.println("speed " + this.speed);
 
-        speedx = random.nextInt(this.speed - MenuScreen.MIN_SPEED + 1)+MenuScreen.MIN_SPEED;
-        speedy = random.nextInt(this.speed - MenuScreen.MIN_SPEED + 1)+MenuScreen.MIN_SPEED;
+        speedx = random.nextInt(this.speed - MenuScreen.MIN_SPEED_C/30 + 1)+MenuScreen.MIN_SPEED_C/30;
+        speedy = random.nextInt(this.speed - MenuScreen.MIN_SPEED_C/30 + 1)+MenuScreen.MIN_SPEED_C/30;
 
-        //affine2 = new Affine2();
         double s = Math.sqrt(speedx*speedx+speedy*speedy)/(radius*radius);
         vortex = new Rankine(radius, speedx, speedy, s, 0, new Rankine.Speeds());
         trees = new ArrayList<Tree>();
@@ -129,11 +125,7 @@ public class SimulationScreen implements ScreenWithStage {
                         height*0.035f,
                         height/4.0f);
                 trees.add(t);
-		        /*
-		        Image treeActor = new Image(treeTexture);
-		        treeActor.setX(x);
-		        treeActor.setY(y);
-		        stage.addActor(treeActor);*/
+
                 j += random.nextInt(maxStep-minStep)+minStep;
             }
         }
@@ -145,18 +137,7 @@ public class SimulationScreen implements ScreenWithStage {
     }
 
     private void updateTrees(){
-        /*int state = 0;
-        for(int i=0;i<this.trees.size();++i) {
-            Tree tree = trees.get(i);
-            if (!tree.state()) continue;
-            else {
-                state = tree.calculateTreeForce(speed);
-                if (state == 2)
-                    tree.setFallen();
-                else if (state == 1)
-                    tree.setBroken();
-            }
-        }*/
+
         for(int i=0;i<this.trees.size();++i) {
             Tree t = trees.get(i);
             if (t.getState() != Tree.states.FALLEN) {
@@ -165,9 +146,6 @@ public class SimulationScreen implements ScreenWithStage {
                 if (distance <= this.radius) {
                     Rankine.Speeds speeds = this.vortex.calculateWind(t,distance);
                     t.calculateTreeForce(speeds.getVr());
-
-
-                    //System.out.println(speeds.getVr());
                 }
             }
         }
@@ -193,16 +171,11 @@ public class SimulationScreen implements ScreenWithStage {
         handleInput();
         cam.update();
         batch.setProjectionMatrix(cam.combined);
-        //rysowanieeeee
+
         Gdx.gl.glClearColor(0, 0, .5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         this.batch.begin();
-        /*batch.draw(
-    			bgtex, 
-    			cam.position.x-Gdx.graphics.getWidth()/2, 
-    			cam.position.y-Gdx.graphics.getHeight()/2, 
-    			Gdx.graphics.getWidth(), 
-    			Gdx.graphics.getHeight());*/
+
         for(float i=0 ; i<=Gdx.graphics.getWidth()+cam.viewportWidth*2 ; i=i+cam.viewportWidth) {
         	for(float j=0 ; j<=Gdx.graphics.getHeight()+cam.viewportHeight*2 ; j=j+cam.viewportHeight) {
         		batch.draw(
@@ -223,19 +196,6 @@ public class SimulationScreen implements ScreenWithStage {
             if(t.angle < t.destAngle) t.angle += 2.5f;
             this.batch.draw(treeTextureRegion, t.getX(), t.getY(), 0, 0,
                     20,35+8*t.getHeight(),1 ,1, t.angle*t.fallDirection);
-            /*
-                        if (t.isStanding()) {
-                double distance = Math.sqrt(Math.pow(t.getX() - this.vortex.getOrigin().getOrig_x(), 2)
-                        + Math.pow(t.getY() - this.vortex.getOrigin().getOrig_y(), 2));
-                if (distance <= this.radius) {
-//                    Rankine.Speeds speeds = this.vortex.calculateWind(t);
-//                    int x = t.calculateTreeForce(speeds.getVr());
-//                    if (x == 2)
-                        t.setStanding(false);
-//                    System.out.print(x+" ");
-                }
-            }
-            * */
         }
         this.batch.draw(
                 textureRegion,
@@ -250,17 +210,6 @@ public class SimulationScreen implements ScreenWithStage {
                 this.vortex.currentRotation
         );
         this.batch.end();
-
-/*
-        affine2.setToTranslation(new Vector2(
-                (float)this.vortex.getOrigin().getOrig_x(),
-                (float)this.vortex.getOrigin().getOrig_y()));
-        affine2.setToRotation(this.vortex.currentRotation);
-        this.batch.draw(
-                new TextureRegion(vortexTexture),
-                (float)this.radius,
-                (float)this.radius,
-                affine2);*/
     }
 
     private void handleInput() {

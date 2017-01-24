@@ -16,16 +16,6 @@ public class HWIND extends AbstractTreeModel{
 
     }
 
-    /**
-     *
-     * @param treeI - polozenie drzewa na macierzy X
-     * @param treeJ - polozenie drzewa na macierzy X
-     * @return odleglosc drzewa od brzegu macierzy X
-     */
-    double calculateDistanceFromForestEdge(int treeI, int treeJ){
-        return 0;
-    }
-
     public static double triangleSectorArea(Tree tree, int i){
         double xleft_base=0,xleft_top=0,xright_base=0,xright_top=0,xmiddle=0,a=0,b=0,c=0,h1=0,h2=0,area=0;
         double height = tree.Crown_depth;
